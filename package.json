@@ -1,0 +1,14 @@
+{
+  "name": "bec4d197b1c99e30",
+  "main": "bec4d197b1c99e30@819.js",
+  "version": "819.0.0",
+  "homepage": "https://observablehq.com/d/bec4d197b1c99e30",
+  "author": {
+    "name": "Experimentation",
+    "url": "https://observablehq.com/@mxngjxa"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}

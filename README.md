@@ -1,4 +1,6 @@
-# World History Timeline
+# Chickens Timeline
+
+## Readme is still incomplete
 
 https://observablehq.com/d/bec4d197b1c99e30@819
 

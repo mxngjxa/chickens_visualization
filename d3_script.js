@@ -8,14 +8,14 @@ Data provided by Prof. Dong Xianjun, original spreadsheet can be found [here](ht
 )}
 
 function _sorting(select){return(
-select({title: 'Sorted by', options:["batch", "color"], value:"color"})
+  select({title: 'Sorted by', options:["batch", "color"], value:"color"})
 )}
 
 function _chart(sorting,dataByFeatherColor,data,d3,color,DOM,width,height,margin,createTooltip,y,getRect,getTooltipContent,axisTop,axisBottom)
 {
 
   let filteredData;
-  if(sorting !== "color") {
+  if(sorting !== "batch") {
     filteredData = [].concat.apply([], dataByFeatherColor.map(d=>d.values));
   } else { 
     filteredData = data.sort((a,b) => a.start - b.start);
@@ -105,19 +105,18 @@ function _chart(sorting,dataByFeatherColor,data,d3,color,DOM,width,height,margin
   return parent
 
 }
+function _getTooltipContent(formatDate) {
+  return function(d) {
+    return `<b>${d.name}</b>
+            <br/>
+            <b style="color:${d.color.darker()}">${d.color}</b>
+            <br/>
+            ${formatDate(d.start)} - ${formatDate(d.end)}
+            <br/>
+            Death Cause: ${d.death_cause}`;
+  }
+}
 
-
-function _getTooltipContent(formatDate){
-  return(
-    function(d) {
-      return `<b>${d.name}</b>
-              <br/>
-              <b style="color:${d.color.darker()}">${d.color}</b>
-              <br/>
-              ${formatDate(d.start)} - ${formatDate(d.end)}`
-              }
-          )
-        }
 
 function _height() {
   return 1000;
@@ -171,15 +170,13 @@ function _getRect(d3, x, width, y) {
 
     el.style("cursor", "pointer");
 
-    el
-      .append("rect")
+    el.append("rect")
       .attr("x", sx)
       .attr("height", y.bandwidth())
       .attr("width", w)
       .attr("fill", d.color);
 
-    el
-      .append("text")
+    el.append("text")
       .text(d.name)
       .attr("x", isLabelRight ? sx - 5 : sx + w + 5)
       .attr("y", y.bandwidth() / 2)
@@ -191,12 +188,16 @@ function _getRect(d3, x, width, y) {
 }
 
 function _dataByBatch(d3,data){
-  return (d3.nest().key(d=>d.batch).entries(data)
-)} 
+  return (
+    d3.nest().key(d=>d.batch).entries(data)
+  )
+}
 
 function _dataByFeatherColor(d3,data){
-  return(d3.nest().key(d=>d.color).entries(data)
-)}
+  return(
+    d3.nest().key(d=>d.color).entries(data)
+  )
+}
 
 function _axisBottom(d3,x,formatDate){
   return(
@@ -211,24 +212,26 @@ d3.axisTop(x)
     .tickFormat(formatDate)
 )}
 
-function _formatDate(){return(
-d=> d < 0 ? `${-d}BC` : `${d}AD`
-)}
+function _formatDate() {
+  return d => d.toISOString().split('T')[0];
+}
 
 function _d3(require){return(
 require("d3@5")
 )}
 
-async function _csv(d3,FileAttachment){return(
-d3.csvParse(await FileAttachment("chickens.csv").text())
-)}
+async function _csv(d3,FileAttachment){
+  return(
+    d3.csvParse(await FileAttachment("chickens.csv").text())
+  )
+}
 
 function _data(csv) {
   return csv.map(d => {
     return {
       ...d,
-      start: +d.start,
-      end: +d.end
+      start: new Date(d.start),
+      end: new Date(d.end)
     };
   }).sort((a, b) => a.start - b.start);
 }
@@ -246,9 +249,9 @@ function _color(d3,batch){return(
 d3.scaleOrdinal(d3.schemeSet2).domain(batch)
 )}
 
-function _23(html){return(
-html`CSS<style> svg{font: 11px sans-serif;}</style>`
-)}
+function _23(html) {
+  return html`<style> svg { font: 11px sans-serif; } .tooltip { position: absolute; background-color: white; border: 1px solid #ccc; padding: 10px; pointer-events: none; } </style>`;
+}
 
 export default function define(runtime, observer) {
   const main = runtime.module();
@@ -260,28 +263,6 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("viewof sorting")).define("viewof sorting", ["select"], _sorting);
   main.variable(observer("sorting")).define("sorting", ["Generators", "viewof sorting"], (G, _) => G.input(_));
-  main.variable(observer("chart")).define("chart", ["sorting","dataByBatch","data","d3","color","DOM","width","height","margin","createTooltip","y","getRect","getTooltipContent","axisTop","axisBottom"], _chart);
-  main.variable(observer("getTooltipContent")).define("getTooltipContent", ["formatDate"], _getTooltipContent);
-  main.variable(observer("height")).define("height", _height);
-  main.variable(observer("y")).define("y", ["d3","data","height","margin"], _y);
-  main.variable(observer("x")).define("x", ["d3","data","width","margin"], _x);
-  main.variable(observer("margin")).define("margin", _margin);
-  main.variable(observer("createTooltip")).define("createTooltip", _createTooltip);
-  main.variable(observer("getRect")).define("getRect", ["d3","x","width","y"], _getRect);
-  main.variable(observer("dataByBatch")).define("dataByBatch", ["d3","data"], _dataByBatch);
-  main.variable(observer("dataByFeatherColor")).define("dataByFeatherColor", ["d3","data"], _dataByFeatherColor);
-  main.variable(observer("axisBottom")).define("axisBottom", ["d3","x","formatDate"], _axisBottom);
-  main.variable(observer("axisTop")).define("axisTop", ["d3","x","formatDate"], _axisTop);
-  main.variable(observer("formatDate")).define("formatDate", _formatDate);
-  main.variable(observer("d3")).define("d3", ["require"], _d3);
-  main.variable(observer("csv")).define("csv", ["d3","FileAttachment"], _csv);
-  main.variable(observer("data")).define("data", ["csv"], _data);
-  main.variable(observer("batch")).define("batch", ["d3","data"], _batch);
-  main.variable(observer("batches")).define("batches", ["dataByBatch"], _batches);
-  main.variable(observer("color")).define("color", ["d3","batch"], _color);
-  const child1 = runtime.module(define1);
-  main.import("checkbox", child1);
-  main.import("select", child1);
-  main.variable(observer()).define(["html"], _23);
-  return main;
+  main.variable(observer("chart")).define("chart", ["sorting","dataByFeatherColof"]
+  )
 }

@@ -8,7 +8,7 @@ Data provided by [Professor Dong Xianjun](https://donglab.org/).
 )}
 
 function _sorting(select){return(
-select({title: 'Sorted by', options:["region","time"], value:"time"})
+select({title: 'Sorted by', options:["color","time"], value:"time"})
 )}
 
 function _chart(sorting,dataByRegion,data,d3,color,DOM,width,height,margin,createTooltip,y,getRect,getTooltipContent,axisTop,axisBottom)

@@ -94,7 +94,7 @@ function _chart(sorting,dataByRegion,data,d3,color,DOM,width,height,margin,creat
 
     const civs = d3.selectAll(".civ")
 
-    civs.data(filteredData, d=>d.civilization)
+    civs.data(filteredData, d=>d.chicken_name)
       .transition()
       // .delay((d,i)=>i*10)
       .ease(d3.easeCubic)
@@ -109,7 +109,7 @@ function _chart(sorting,dataByRegion,data,d3,color,DOM,width,height,margin,creat
 
 function _getTooltipContent(formatDate){return(
 function(d) {
-return `<b>${d.civilization}</b>
+return `<b>${d.chicken_name}</b>
 <br/>
 <b style="color:${d.color.darker()}">${d.region}</b>
 <br/>
@@ -173,7 +173,7 @@ function(d){
 
   el
     .append("text")
-    .text(d.civilization)
+    .text(d.chicken_name)
     .attr("x",isLabelRight ? sx-5 : sx+w+5)
     .attr("y", 2.5)
     .attr("fill", "black")

@@ -249,111 +249,6 @@ function _23(html){return(
 html`CSS<style> svg{font: 11px sans-serif;}</style>`
 )}
 
-function _stackedBarChart(d3, data, margin, width, height) {
-  // Prepare data to count chickens alive for each month from 2022 to 2024.
-  const startDate = new Date(2022, 0, 1).getTime(); // January 1, 2022
-  const endDate = new Date(2024, 11, 31).getTime(); // December 31, 2024
-  
-  // Create an array of months within the specified range
-  const months = d3.timeMonths(new Date(2022, 0, 1), new Date(2025, 0, 1));
-  
-  // Initialize an object to count alive chickens for each month
-  const monthlyCounts = months.map(date => ({
-    date: d3.timeFormat("%Y-%m")(date),
-    aliveCount: 0
-  }));
-
-  // Calculate the number of chickens alive each month
-  data.forEach(d => {
-    monthlyCounts.forEach(month => {
-      const monthStart = new Date(month.date).getTime();
-      const monthEnd = new Date(monthStart);
-      monthEnd.setMonth(monthEnd.getMonth() + 1);
-
-      if (d.start <= monthEnd && d.end >= monthStart) {
-        month.aliveCount++;
-      }
-    });
-  });
-
-  // Prepare the scales for positional and color encodings.
-  const x = d3.scaleBand()
-    .domain(monthlyCounts.map(d => d.date))
-    .range([margin.left, width - margin.right])
-    .padding(0.1);
-
-  const y = d3.scaleLinear()
-    .domain([0, d3.max(monthlyCounts, d => d.aliveCount)])
-    .rangeRound([height - margin.bottom, margin.top]);
-
-  // Create the SVG container.
-  const svg = d3.create("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .attr("viewBox", [0, 0, width, height])
-    .attr("style", "max-width: 100%; height: auto; font-family: Arial, sans-serif;");
-
-  // Add chart title
-  svg.append("text")
-    .attr("x", width / 2)
-    .attr("y", margin.top / 2)
-    .attr("text-anchor", "middle")
-    .style("font-size", "20px")
-    .style("font-weight", "bold")
-    .text("Number of Chickens over Time");
-
-  // Append bars for each month
-  svg.append("g")
-    .selectAll("rect")
-    .data(monthlyCounts)
-    .join("rect")
-      .attr("x", d => x(d.date))
-      .attr("y", d => y(d.aliveCount))
-      .attr("height", d => y(0) - y(d.aliveCount))
-      .attr("width", x.bandwidth())
-      .attr("fill", "#69b3a2") // welcoming blue color
-    .append("title")
-      .text(d => `${d.date}: ${d.aliveCount} chickens`);
-
-  // Append the horizontal axis.
-  svg.append("g")
-    .attr("transform", `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(x).tickSize(0))
-    .selectAll("text")  
-      .attr("transform", "rotate(-45)")
-      .style("text-anchor", "end");
-
-  // Append the vertical axis.
-  svg.append("g")
-    .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y).ticks(null, "s"));
-
-  // Add gridlines
-  svg.append("g")
-    .attr("class", "grid")
-    .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y)
-      .tickSize(-width + margin.left + margin.right)
-      .tickFormat("")
-    )
-    .selectAll(".tick line")
-      .attr("stroke", "#ccc")
-      .attr("stroke-dasharray", "2,2");
-
-  // Style axis lines and text
-  svg.selectAll(".domain")
-    .attr("stroke", "#ccc");
-
-  svg.selectAll(".tick text")
-    .style("font-size", "12px");
-
-  // Return the chart.
-  return svg.node();
-}
-
-
-
-
 export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
@@ -387,6 +282,5 @@ export default function define(runtime, observer) {
   main.import("checkbox", child1);
   main.import("select", child1);
   main.variable(observer()).define(["html"], _23);
-  main.variable(observer("stackedBarChart")).define("stackedBarChart", ["d3", "data", "margin", "width", "height"], _stackedBarChart);
   return main;
 }

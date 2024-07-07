@@ -29,7 +29,7 @@ async function _1(md,FileAttachment){return(
     * [\`password\`](#passwordDemo)`
   )}
   
-function _2(md){return(
+  function _2(md){return(
   md`| <h3>Friends & Family:</h3>  |   |
   |---|---|
   | **[@mbostock/form-input](/@mbostock/form-input)**  | Fully custom forms, combining inputs into a single reactive cell. |
@@ -54,7 +54,7 @@ function _2(md){return(
   <br>*If you have any improvements for the bazaar, [please make your change in a fork and send it to me as a suggestion.](https://observablehq.com/@observablehq/suggestions-and-comments)*`
   )}
   
-function _sliderDemo(md){return(
+  function _sliderDemo(md){return(
   md`---
   ## Sliders
   
@@ -67,7 +67,7 @@ function _sliderDemo(md){return(
   slider()
   )}
   
-function _a1(slider){return(
+  function _a1(slider){return(
   slider({
     min: 0, 
     max: 1, 
@@ -77,7 +77,7 @@ function _a1(slider){return(
   })
   )}
   
-function _a1_1(slider){return(
+  function _a1_1(slider){return(
   slider({
     min: 0, 
     max: 1, 
@@ -87,7 +87,7 @@ function _a1_1(slider){return(
   })
   )}
   
-function _a2(slider){return(
+  function _a2(slider){return(
   slider({
     min: 0,
     max: 1e9,
@@ -99,7 +99,7 @@ function _a2(slider){return(
   })
   )}
   
-function _a3(slider){return(
+  function _a3(slider){return(
   slider({
     min: 0, 
     max: 100, 

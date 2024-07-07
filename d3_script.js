@@ -1,14 +1,14 @@
 import define1 from "./helper.js";
 
 function _1(md){return(
-md`#Garden Chickens Timeline
-Data provided by Prof. Dong Xianjun, original spreadsheet can be found [here](https://docs.google.com/spreadsheets/d/1GCvYFv9Pqc0H12itqHtpfBVSDR87uFGcJY2aniJgJk0/edit?gid=0#gid=0).
+md`# Chickens Timeline
+Data provided by [Professor Dong Xianjun](https://donglab.org/).
 
 `
 )}
 
 function _sorting(select){return(
-select({title: 'Sorted by', options:["batch","color"], value:"color"})
+select({title: 'Sorted by', options:["region","time"], value:"time"})
 )}
 
 function _chart(sorting,dataByRegion,data,d3,color,DOM,width,height,margin,createTooltip,y,getRect,getTooltipContent,axisTop,axisBottom)
@@ -55,7 +55,7 @@ function _chart(sorting,dataByRegion,data,d3,color,DOM,width,height,margin,creat
         .style("opacity", 1)
         .html(getTooltipContent(d))
     })
-      .on("mouseleave", function(d) {
+      .on("mouseleave", function(d) {e
       d3.select(this).select("rect").attr("fill", d.color)
       tooltip.style("opacity", 0)
     })
@@ -211,18 +211,21 @@ require("d3@5")
 )}
 
 async function _csv(d3,FileAttachment){return(
-d3.csvParse(await FileAttachment("civilization timelines - civilization timelines.csv").text())
+d3.csvParse(await FileAttachment("chickens.csv").text())
 )}
 
-function _data(csv){return(
-csv.map(d=>{
-return {
-  ...d,
-  start: +d.start,
-  end: +d.end
+function _data(csv) {
+  return csv.map(d => {
+    const parseDate = dateStr => dateStr === "present" ? Date.now() : new Date(dateStr).getTime();
+
+    return {
+      ...d,
+      start: parseDate(d.start),
+      end: parseDate(d.end)
+    };
+  }).sort((a, b) => a.start - b.start);
 }
-}).sort((a,b)=>  a.start-b.start)
-)}
+
 
 function _regions(d3,data){return(
 d3.nest().key(d=>d.region).entries(data).map(d=>d.key)
@@ -244,7 +247,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["chickens.csv", {url: new URL("./data/chickens.csv", import.meta.url), mimeType: "text/csv", toString}]
+    ["chickens.csv", {url: new URL("./files/chickens.csv", import.meta.url), mimeType: "text/csv", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);

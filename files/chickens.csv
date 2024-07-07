@@ -1,4 +1,4 @@
-chicken_name,region,sex,batch,start,end,picture,death_cause
+chicken_name,color,sex,batch,start,end,picture,death_cause
 Mary,white,Hen,1,2022/3/26,present,🐓,
 charlotte,white,Hen,1,2022/3/26,2024/1/27,🐓,by fox
 buttercup,white,Hen,1,2022/3/26,2022/10/8,🐓,by us

@@ -11,17 +11,17 @@ function _sorting(select){return(
 select({title: 'Sorted by', options:["color","time"], value:"time"})
 )}
 
-function _chart(sorting,dataByColor,data,d3,color,DOM,width,height,margin,createTooltip,y,getRect,getTooltipContent,axisTop,axisBottom)
+function _chart(sorting,dataByFeatherColor,data,d3,color,DOM,width,height,margin,createTooltip,y,getRect,getTooltipContent,axisTop,axisBottom)
 {
 
   let filteredData;
   if(sorting !== "time") {
-    filteredData = [].concat.apply([], dataByColor.map(d=>d.values));
+    filteredData = [].concat.apply([], dataByFeatherColor.map(d=>d.values));
   } else { 
     filteredData = data.sort((a,b)=>  a.start-b.start);
   }
 
-  filteredData.forEach(d=> d.color = d3.color(color(d.color)))
+  filteredData.forEach(d=> d.color = d3.color(color(d.feather_color)))
 
 
   let parent = this; 
@@ -111,7 +111,7 @@ function _getTooltipContent(formatDate){return(
 function(d) {
 return `<b>${d.chicken_name}</b>
 <br/>
-<b style="color:${d.color.darker()}">${d.color}</b>
+<b style="color:${d.color.darker()}">${d.feather_color}</b>
 <br/>
 ${formatDate(d.start)} - ${formatDate(d.end)}
 `
@@ -186,8 +186,8 @@ function _dataByTimeline(d3,data){return(
 d3.nest().key(d=>d.timeline).entries(data)
 )}
 
-function _dataByColor(d3,data){return(
-d3.nest().key(d=>d.color).entries(data)
+function _dataByFeatherColor(d3,data){return(
+d3.nest().key(d=>d.feather_color).entries(data)
 )}
 
 function _axisBottom(d3,x,formatDate){return(
@@ -233,16 +233,16 @@ function _data(csv) {
 }
 
 
-function _colors(d3,data){return(
-d3.nest().key(d=>d.color).entries(data).map(d=>d.key)
+function _feather_colors(d3,data){return(
+d3.nest().key(d=>d.feather_color).entries(data).map(d=>d.key)
 )}
 
 function _timelines(dataByTimeline){return(
 dataByTimeline.map(d=>d.key)
 )}
 
-function _color(d3,colors){return(
-d3.scaleOrdinal(d3.schemeSet2).domain(colors)
+function _color(d3,feather_colors){return(
+d3.scaleOrdinal(d3.schemeSet2).domain(feather_colors)
 )}
 
 function _23(html){return(
@@ -259,7 +259,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("viewof sorting")).define("viewof sorting", ["select"], _sorting);
   main.variable(observer("sorting")).define("sorting", ["Generators", "viewof sorting"], (G, _) => G.input(_));
-  main.variable(observer("chart")).define("chart", ["sorting","dataByColor","data","d3","color","DOM","width","height","margin","createTooltip","y","getRect","getTooltipContent","axisTop","axisBottom"], _chart);
+  main.variable(observer("chart")).define("chart", ["sorting","dataByFeatherColor","data","d3","color","DOM","width","height","margin","createTooltip","y","getRect","getTooltipContent","axisTop","axisBottom"], _chart);
   main.variable(observer("getTooltipContent")).define("getTooltipContent", ["formatDate"], _getTooltipContent);
   main.variable(observer("height")).define("height", _height);
   main.variable(observer("y")).define("y", ["d3","data","height","margin"], _y);
@@ -268,16 +268,16 @@ export default function define(runtime, observer) {
   main.variable(observer("createTooltip")).define("createTooltip", _createTooltip);
   main.variable(observer("getRect")).define("getRect", ["d3","x","width","y"], _getRect);
   main.variable(observer("dataByTimeline")).define("dataByTimeline", ["d3","data"], _dataByTimeline);
-  main.variable(observer("dataByColor")).define("dataByColor", ["d3","data"], _dataByColor);
+  main.variable(observer("dataByFeatherColor")).define("dataByFeatherColor", ["d3","data"], _dataByFeatherColor);
   main.variable(observer("axisBottom")).define("axisBottom", ["d3","x","formatDate"], _axisBottom);
   main.variable(observer("axisTop")).define("axisTop", ["d3","x","formatDate"], _axisTop);
   main.variable(observer("formatDate")).define("formatDate", _formatDate);
   main.variable(observer("d3")).define("d3", ["require"], _d3);
   main.variable(observer("csv")).define("csv", ["d3","FileAttachment"], _csv);
   main.variable(observer("data")).define("data", ["csv"], _data);
-  main.variable(observer("colors")).define("colors", ["d3","data"], _colors);
+  main.variable(observer("feather_colors")).define("feather_colors", ["d3","data"], _feather_colors);
   main.variable(observer("timelines")).define("timelines", ["dataByTimeline"], _timelines);
-  main.variable(observer("color")).define("color", ["d3","colors"], _color);
+  main.variable(observer("color")).define("color", ["d3","feather_colors"], _color);
   const child1 = runtime.module(define1);
   main.import("checkbox", child1);
   main.import("select", child1);

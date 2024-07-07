@@ -202,9 +202,15 @@ d3.axisTop(x)
     .tickFormat(formatDate)
 )}
 
-function _formatDate(){return(
-d=> d < 0 ? `${-d}BC` : `${d}AD`
-)}
+function _formatDate() {
+  return (unixTime) => {
+      const date = new Date(unixTime); // Cosnvert Unix time to milliseconds
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${month}/${day}/${year}`;
+  };
+}
 
 function _d3(require){return(
 require("d3@5")
